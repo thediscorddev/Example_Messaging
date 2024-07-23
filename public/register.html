@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Register</title>
+        <link rel = "stylesheet" href = "styles/style.css">
+    </head>
+    <body>
+        <div class="login-container">
+            <h2>Login</h2>
+            <form action="/register" method="post">
+                <label for="username">Username</label>
+                <input type="text" pattern="[A-Za-z0-9]+" id="username" name="username" required>
+    
+                <label for="password">Register</label>
+                <input type="password" id="password" name="password" required>
+                <label for="password">Retype Password</label>
+                <input type="password" id="password_" name="password_" required>
+                <h8>Note: username length must be between 8 and 32.<br>Password length must be greater than 8</h8>
+                <input type="submit" value="Register">
+            </form>
+        </div>
+    </body>
+</html>

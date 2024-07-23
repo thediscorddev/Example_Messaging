@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Simple Converstation Chat</title>
+        <link rel = "stylesheet" href = "styles/def.css">
+        <script src="jquery.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="sidebar" id="sidebar">
+                <a href="/dashboard.html">Dashboard</a>
+                <a href="/new.html">New Converstation</a>
+                <a href="/find.html">Find Account</a>
+            </div>
+            <div id="main">
+                <h2>New Conversation</h2>
+                <p>Please enter the username of the target person to start a new Converstation.</p>
+                <form id="myForm">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                    <br>
+                    <br><br>
+                    <button type="submit">Submit</button>
+                </form>
+                <p id ="status" style="color:red;"></p>
+            </div>
+        </div>
+        <script src="menu.js"></script>
+        <script src="check_login.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#myForm').submit(function(event) {
+                    event.preventDefault(); // Prevent the default form submission
+                    const username = $('#username').val();
+                    $("#status").html("Please wait... (This can take up to around 10 seconds..)");
+                    $.get("/create_new_conversation?username="+username, function(data) {
+                       if(data.status == 406) {
+                            $("#status").html("406 error: " + data.message);
+                       } else if (data.status == 200) {
+                        window.location.href = window.location.origin +"/conversation.html?id="+data.message;
+                       }
+                    })
+                })
+            })
+        </script>
+    </body>
+</html>

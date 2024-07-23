@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Simple Converstation Chat</title>
+        <link rel = "stylesheet" href = "styles/def.css">
+        <script src="jquery.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="sidebar" id="sidebar">
+                <a href="/dashboard.html">Dashboard</a>
+                <a href="/new.html">New Converstation</a>
+                <a href="/find.html">Find Account</a>
+            </div>
+            <div class="target_info">
+                <p id = "targetname">Working in process p2</p>
+            </div>
+            <div class="fixed-div">
+                <input type="text" id="input" name="input" placeholder="Type here">
+                <button type="button" id = "buttoned">Send</button>
+            </div>
+            <div id="main">
+            </div>
+            
+        </div>
+        <script src="menu.js"></script>
+        <script src="check_login.js"></script>
+        <script>
+            $(document).ready(function() {
+                const url = new URL(window.location.href);
+                const code = url.searchParams.get('id');
+                if(!code) window.location.href = window.location.origin + "/404.html";
+                $.get("/getaccountdata?id="+code, function(data) {
+                    if(data.status != 200) window.location.href = window.location.origin + "/404.html";
+                    $("#targetname").html(data.data.username + "( "+data.data.id+")");
+                });
+                setInterval(function() {
+                    $.get("/get_conversation?id="+code, function(data) {
+                    if(data.status != 200) window.location.href = window.location.origin + "/404.html";
+                    else {
+                        $.get("/get_conversation?id="+code, function(data) {});
+                        $('#main').empty();
+                        data.conversation.forEach(element => {
+                            if(element.id==code) {
+                                //target
+                                var newDiv = $('<div class="target_message"><p>'+element.content+'</p></div><br><br><br><br><br><br>');
+                                $("#main").append(newDiv);
+                            }else {
+                                var newDiv = $('<div class="your_message"><p>'+element.content+'</p></div><br><br><br><br><br><br>');
+                                $("#main").append(newDiv);
+                            }
+                            /* 
+                                {
+                                "id":value,
+                                "content":value
+                                }
+                            */
+                        });
+                    }
+                })
+                },"500");
+                $('#buttoned').on('click', function() {
+                    const value = $("#input").val();
+                    $.post('/send_message', { input: value, id:code })
+                    .done(function(response) {
+                       
+                    })
+                    .fail(function(xhr, status, error) {
+                        alert(error);
+                    });
+                })
+            })
+        </script>
+    </body>
+</html>

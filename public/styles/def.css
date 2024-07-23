@@ -1,0 +1,105 @@
+body {
+    font-family: "Lato", sans-serif;
+}
+
+.container {
+    display: flex;
+}
+button {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+.your_message p {
+    right: 0px;
+}
+.target_message p {
+    left: 250px;
+}
+.your_message {
+    float: right;
+    border: 1px solid lightblue;
+    background-color: lightblue;
+    padding: 10px;
+    margin: 10px auto;
+}
+.target_message {
+    float: left;
+    border: 1px solid lightgray;
+    background-color: lightgray;
+    padding: 10px;
+    margin: 10px auto;
+}
+.fixed-div {
+    position: fixed;
+    bottom: 0px; /* Distance from the top of the viewport */
+    right: 0; /* Distance from the right side of the viewport */
+    left:250px;
+    height: 30px;
+    background-color: lightblue;
+    border: 1px solid lightblue;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+.fixed-div button {
+    vertical-align: middle;
+}
+.target_name {
+    position: fixed;
+    top: 0px; /* Distance from the top of the viewport */
+    right: 0; /* Distance from the right side of the viewport */
+    left:250px;
+    height: 30px;
+    background-color: lightblue;
+    border: 1px solid lightblue;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+.sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: -250px; /* Initially hidden */
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.sidebar a {
+    padding: 8px 16px;
+    text-decoration: none;
+    font-size: 25px;
+    color: white;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    background-color: #575757;
+}
+
+.sidebar .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+#main {
+    transition: margin-left .5s;
+    padding: 16px;
+}
+
+.openbtn {
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.openbtn:hover {
+    background-color: #ddd;
+}
