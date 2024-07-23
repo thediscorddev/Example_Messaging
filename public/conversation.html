@@ -9,19 +9,20 @@
         <div class="container">
             <div class="sidebar" id="sidebar">
                 <a href="/dashboard.html">Dashboard</a>
-                <a href="/new.html">New Converstation</a>
+                <a href="/new.html">New Conversation</a>
                 <a href="/find.html">Find Account</a>
             </div>
             <div class="target_info">
-                <p id = "targetname">Working in process p2</p>
+                <p id="targetname">Not selected</p>
             </div>
-            <div class="fixed-div">
+            <div class="fixed_contact" id = "contact">
+                Please wait.. we are getting the data. (They are updated every 5 seconds...)
+            </div>
+            <div class="fixed-div" id = "tiv">
                 <input type="text" id="input" name="input" placeholder="Type here">
-                <button type="button" id = "buttoned">Send</button>
             </div>
             <div id="main">
             </div>
-            
         </div>
         <script src="menu.js"></script>
         <script src="check_login.js"></script>
@@ -29,10 +30,28 @@
             $(document).ready(function() {
                 const url = new URL(window.location.href);
                 const code = url.searchParams.get('id');
-                if(!code) window.location.href = window.location.origin + "/404.html";
-                $.get("/getaccountdata?id="+code, function(data) {
+                if(!code) {
+                    $("#main").append("<br><br>Please select a conversation to start!");
+                }
+                setInterval(function() {
+                    $.get("/getallconversation", function(data) {
+                        $("#contact").empty();
+                        if(data.data.length == 0) $("#contact").append("No Conversation found:(");
+                        else {
+                            for(const obj of data.data) {
+                                //alert("<a href=conversation.html?id="+obj.id+">"+obj.username+"<br>"+obj.isfromuser+": "+obj.latest_message+"</a><br><br><br>")
+                                if(parseInt(obj.id) != NaN) $.get("/getaccountdata?id="+obj.id, function(datas) {
+                                    $("#contact").append("<a href=conversation.html?id="+obj.id+">"+datas.data.username+"<br>"+obj.isfromuser+": "+obj.latest_message+"</a>");
+                                })
+                            }
+                        }
+                    });
+                },"5000");
+                if(code) {
+                    $("#tiv").append('<button type="button" id="buttoned">Send</button>');
+                    $.get("/getaccountdata?id="+code, function(data) {
                     if(data.status != 200) window.location.href = window.location.origin + "/404.html";
-                    $("#targetname").html(data.data.username + "( "+data.data.id+")");
+                    $("#targetname").html(data.data.username + " ("+data.data.id+")");
                 });
                 setInterval(function() {
                     $.get("/get_conversation?id="+code, function(data) {
@@ -40,6 +59,7 @@
                     else {
                         $.get("/get_conversation?id="+code, function(data) {});
                         $('#main').empty();
+                        $("#main").append("<br><br><br>");
                         data.conversation.forEach(element => {
                             if(element.id==code) {
                                 //target
@@ -69,6 +89,7 @@
                         alert(error);
                     });
                 })
+            }
             })
         </script>
     </body>

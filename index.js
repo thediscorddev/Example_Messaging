@@ -88,6 +88,52 @@ server.post("/send_message", (req,res) => {
         }
     })
 })
+server.get("/getallconversation", (req,res) => {
+    if(!req.session.ACCOUNT_TOKEN) return res.redirect("/unauth");
+    let response_data = {
+        "status":200,
+        "message":"OK",
+        "data":[]
+    }
+    /* 
+    "id":value,
+    "username":value,
+    "latest_message":value,
+    "isfromuser":value
+    */
+    db.all().then(async arr => {
+         for(const obj of arr) {
+            if(obj.id.includes(req.session.ACCOUNT_ID) && obj.id.startsWith("__conversation__")) {
+                const arr_ = obj.id.split("__");
+                var userid = arr_[2];
+                if(arr_[2] == req.session.ACCOUNT_ID) userid = arr_[3];
+                let prep = {
+                    "id":userid,
+                    "username":"",
+                    "latest_message":"",
+                    "isfromuser":"Them"
+                }
+                prep.latest_message=obj.value.conversation[obj.value.conversation.length-1].content;
+                if(obj.value.conversation[obj.value.conversation.length-1].content.length > 12) prep.latest_message = prep.latest_message.slice(0,9) + "...";
+                if(obj.value.conversation[obj.value.conversation.length-1].id == req.session.ACCOUNT_ID) prep.isfromuser="You";
+                db.all().then(arrs => {
+                    for(const objs of arrs) {
+                        if(objs.id.includes("__account")) {
+                            if(objs.value.id == userid) {
+                                prep.username=objs.value.username;
+                                break;
+                            }
+                        }
+                    }
+                })
+                response_data.data.push(prep);
+            }
+         }   
+    })
+    setTimeout(function() {
+        res.json(response_data);
+    },"3000");
+})
 server.get("/getaccountdata",(req,res) => {
     if(!req.session.ACCOUNT_TOKEN) return res.redirect("/unauth");
     const id = req.query.id;
