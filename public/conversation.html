@@ -10,13 +10,13 @@
             <div class="sidebar" id="sidebar">
                 <a href="/dashboard.html">Dashboard</a>
                 <a href="/new.html">New Conversation</a>
-                <a href="/find.html">Find Account</a>
             </div>
             <div class="target_info">
                 <p id="targetname">Not selected</p>
+                <h6 id = "statuscodesend"></h6>
             </div>
             <div class="fixed_contact" id = "contact">
-                Please wait.. we are getting the data. (They are updated every 5 seconds...)
+                Please wait.. we are getting the data. (They are updated every 3.5 seconds...)
             </div>
             <div class="fixed-div" id = "tiv">
                 <input type="text" id="input" name="input" placeholder="Type here">
@@ -26,71 +26,44 @@
         </div>
         <script src="menu.js"></script>
         <script src="check_login.js"></script>
+        <script src="since.js"></script>
+        <script src="escapeHTML.js"></script>
+        <script src="isconversationselected.js"></script>
+        <script src="reloadconversationlist.js"></script>
+        <script src="loadmessage.js"></script>
+        <script src="websocket.js"></script>
         <script>
             $(document).ready(function() {
                 const url = new URL(window.location.href);
                 const code = url.searchParams.get('id');
-                if(!code) {
-                    $("#main").append("<br><br>Please select a conversation to start!");
-                }
-                setInterval(function() {
-                    $.get("/getallconversation", function(data) {
-                        $("#contact").empty();
-                        if(data.data.length == 0) $("#contact").append("No Conversation found:(");
-                        else {
-                            for(const obj of data.data) {
-                                //alert("<a href=conversation.html?id="+obj.id+">"+obj.username+"<br>"+obj.isfromuser+": "+obj.latest_message+"</a><br><br><br>")
-                                if(parseInt(obj.id) != NaN) $.get("/getaccountdata?id="+obj.id, function(datas) {
-                                    $("#contact").append("<a href=conversation.html?id="+obj.id+">"+datas.data.username+"<br>"+obj.isfromuser+": "+obj.latest_message+"</a>");
-                                })
-                            }
-                        }
-                    });
-                },"5000");
-                if(code) {
-                    $("#tiv").append('<button type="button" id="buttoned">Send</button>');
-                    $.get("/getaccountdata?id="+code, function(data) {
-                    if(data.status != 200) window.location.href = window.location.origin + "/404.html";
-                    $("#targetname").html(data.data.username + " ("+data.data.id+")");
+                $(document).on('click', '.fakeclickable', function(event) {
+                    event.preventDefault();
+                    $("#"+window.conid).attr('class', 'fakeclickable');
+                    $("#"+event.target.id).attr('class', 'fakeclickable_selected');
+                    switch_convor(event.target.id);
                 });
-                setInterval(function() {
-                    $.get("/get_conversation?id="+code, function(data) {
-                    if(data.status != 200) window.location.href = window.location.origin + "/404.html";
-                    else {
-                        $.get("/get_conversation?id="+code, function(data) {});
-                        $('#main').empty();
-                        $("#main").append("<br><br><br>");
-                        data.conversation.forEach(element => {
-                            if(element.id==code) {
-                                //target
-                                var newDiv = $('<div class="target_message"><p>'+element.content+'</p></div><br><br><br><br><br><br>');
-                                $("#main").append(newDiv);
-                            }else {
-                                var newDiv = $('<div class="your_message"><p>'+element.content+'</p></div><br><br><br><br><br><br>');
-                                $("#main").append(newDiv);
-                            }
-                            /* 
-                                {
-                                "id":value,
-                                "content":value
-                                }
-                            */
-                        });
-                    }
-                })
-                },"500");
-                $('#buttoned').on('click', function() {
+                $(document).on('click', '#buttoned', function(event) {
+                    $("#statuscodesend").html(" sending...");
                     const value = $("#input").val();
-                    $.post('/send_message', { input: value, id:code })
+                    $.post('/send_message', { input: value, id:window.conid })
                     .done(function(response) {
-                       
+                        if(response.status != 200) {
+                            $("#statuscodesend").html(" Failed to send message: " + response.message);
+                        }else {
+                            $("#statuscodesend").html(" success!");
+                            setTimeout(function() {
+                                if($("#statuscodesend").text() == " success!") {
+                                    $("#statuscodesend").empty();
+                                }
+                            },"3000");
+                        }
+            
                     })
                     .fail(function(xhr, status, error) {
                         alert(error);
                     });
                 })
-            }
-            })
+            });
         </script>
     </body>
 </html>

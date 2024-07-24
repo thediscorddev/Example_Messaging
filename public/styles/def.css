@@ -60,6 +60,16 @@ body {
     cursor: pointer;
     text-decoration: none;
 }
+.fixed_contact a.fakeclickable_selected {
+    display: block; /* Each link will be on a new line */
+    background-color: rgb(39, 53, 58);
+    margin: 10px 0;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    text-decoration: none;
+}
 
 .fixed_contact a:hover {
     text-decoration: none;

@@ -10,7 +10,6 @@
             <div class="sidebar" id="sidebar">
                 <a href="/dashboard.html">Dashboard</a>
                 <a href="/new.html">New Converstation</a>
-                <a href="/find.html">Find Account</a>
             </div>
             <div id="main">
                 <h2>New Conversation</h2>
@@ -31,15 +30,19 @@
             $(document).ready(function() {
                 $('#myForm').submit(function(event) {
                     event.preventDefault(); // Prevent the default form submission
-                    const username = $('#username').val();
+                    const usernames = $('#username').val();
                     $("#status").html("Please wait... (This can take up to around 10 seconds..)");
-                    $.get("/create_new_conversation?username="+username, function(data) {
-                       if(data.status == 406) {
+                    $.post('/create_new_conversation', { username: usernames })
+                    .done(function(data) {
+                        if(data.status == 406) {
                             $("#status").html("406 error: " + data.message);
                        } else if (data.status == 200) {
                         window.location.href = window.location.origin +"/conversation.html?id="+data.message;
                        }
                     })
+                    .fail(function(xhr, status, error) {
+                        alert(error);
+                    });
                 })
             })
         </script>

@@ -6,16 +6,16 @@
     </head>
     <body>
         <div class="login-container">
-            <h2>Login</h2>
+            <h2>Register</h2>
             <form action="/register" method="post">
                 <label for="username">Username</label>
                 <input type="text" pattern="[A-Za-z0-9]+" id="username" name="username" required>
     
-                <label for="password">Register</label>
+                <label for="password">password</label>
                 <input type="password" id="password" name="password" required>
                 <label for="password">Retype Password</label>
                 <input type="password" id="password_" name="password_" required>
-                <h8>Note: username length must be between 8 and 32.<br>Password length must be greater than 8</h8>
+                <h8>Note: username length must be between 8 and 30.<br>Password length must be greater than 8 and not larger than 512 characters<br>Username can only contain number and english letter. No special character (Including space) are allowed</h8>
                 <input type="submit" value="Register">
             </form>
         </div>
