@@ -1,7 +1,7 @@
 const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 const host = window.location.hostname;
 const port = window.location.port || 3000; // Use 3000 if no port is specified
-const wsUrl = protocol + "//" + host + ":" + port;
+const wsUrl = protocol + "//" + host + ":";
 const socket = new WebSocket(wsUrl);
 socket.onopen = function(event) {
     console.log('Connection opened:', event);
